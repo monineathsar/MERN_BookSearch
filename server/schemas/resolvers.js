@@ -48,22 +48,19 @@ const resolvers = {
         const updatedUser =  await User.findOneAndUpdate(
             { _id: context.user._id },
             { $addToSet: { savedBooks: args.input }},
-            { new: true, runValidators: true }
-        );
+            { new: true });
 
         return updatedUser;
     },
-    deleteBook: async (parent, args, context) => {
+    deleteBook: async (parent, { bookId }, context) => {
         if(!context.user) {
             throw new AuthenticationError("You are not logged in!");
         }
-
         const updatedUser =  await User.findOneAndUpdate(
             { _id: context.user._id },
-            { $pull: { savedBooks: args.bookId }},
-            { new: true, runValidators: true }
-        );
-
+            { $pull: { savedBooks: { bookId: bookId }}},
+            { new: true });
+            
         return updatedUser;
     }
   }
